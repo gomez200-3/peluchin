@@ -1,5 +1,6 @@
 import makeWASocket, { useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion } from '@whiskeysockets/baileys'
 import { Boom } from '@hapi/boom'
+import { handleMessage } from './bot.js'
 
 async function startBot() {
     const { state, saveCreds } = await useMultiFileAuthState('auth_info_baileys')
@@ -27,11 +28,7 @@ async function startBot() {
 
     sock.ev.on('messages.upsert', async ({ messages }) => {
         const msg = messages[0]
-        if(!msg.message) return
-        const text = msg.message.conversation || msg.message.extendedTextMessage?.text
-        if(text && text.startsWith('/chiste')) {
-            await sock.sendMessage(msg.key.remoteJid, { text: '¡Este es un chiste de prueba!' })
-        }
+        await handleMessage(sock, msg)
     })
 }
 
