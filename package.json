@@ -1,0 +1,16 @@
+{
+  "name": "mi-bot",
+  "version": "1.0.0",
+  "description": "Bot de WhatsApp usando Baileys",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@hapi/boom": "^10.0.0",
+    "@whiskeysockets/baileys": "^6.7.18"
+  }
+}
