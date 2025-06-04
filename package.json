@@ -1,0 +1,13 @@
+{
+  "name": "mi-bot-baileys",
+  "version": "1.0.0",
+  "description": "Bot de WhatsApp con Baileys - Auto respuesta y menús personalizados",
+  "main": "index.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@whiskeysockets/baileys": "^6.7.0"
+  }
+}
