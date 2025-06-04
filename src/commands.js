@@ -1,5 +1,5 @@
-import { chiste } from './funciones/entretenimiento.js'
-import { menuPrincipal } from './utils/helpers.js'
+import { chiste } from '.src/funciones/entretenimiento.js'
+import { menuPrincipal } from '.src/utils/helpers.js'
 
 // Mapea cada comando al módulo y función correspondiente
 export async function ejecutarComando(cmd, args, message) {
