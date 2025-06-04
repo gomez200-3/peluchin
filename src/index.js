@@ -1,9 +1,6 @@
-const baileys = require('@whiskeysockets/baileys');
+const { makeWASocket, useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion } = require('@whiskeysockets/baileys');
 const { Boom } = require('@hapi/boom');
 const { handleMessage } = require('./bot.js');
-
-const makeWASocket = baileys.default;
-const { useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion } = baileys;
 
 async function startBot() {
     const { state, saveCreds } = await useMultiFileAuthState('auth_info_baileys');
