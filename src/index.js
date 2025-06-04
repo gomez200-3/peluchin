@@ -19,7 +19,10 @@ async function startBot() {
         if (connection === 'close') {
             const shouldReconnect = (lastDisconnect.error)?.output?.statusCode !== DisconnectReason.loggedOut;
             if (shouldReconnect) {
+                console.log('Reconectando...');
                 startBot();
+            } else {
+                console.log('Sesión cerrada. Escanea el QR nuevamente.');
             }
         } else if (connection === 'open') {
             console.log('🤖 Bot iniciado correctamente');
@@ -28,6 +31,8 @@ async function startBot() {
 
     sock.ev.on('messages.upsert', async ({ messages }) => {
         const msg = messages[0];
+        // Ignora mensajes de estado y de ti mismo
+        if (!msg.message || msg.key.fromMe) return;
         await handleMessage(sock, msg);
     });
 }
