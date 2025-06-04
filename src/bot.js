@@ -1,4 +1,4 @@
-import { ejecutarComando } from './commands.js'
+import { ejecutarComando } from '.src/commands.js'
 
 export async function handleMessage(sock, message) {
     try {
