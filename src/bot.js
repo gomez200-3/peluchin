@@ -1,21 +1,23 @@
-import { ejecutarComando } from '.src/commands.js'
+const { ejecutarComando } = require('./commands.js');
 
-export async function handleMessage(sock, message) {
+async function handleMessage(sock, message) {
     try {
-        if (!message.message) return
+        if (!message.message) return;
 
-        const from = message.key.remoteJid
-        const msgText = message.message.conversation || message.message.extendedTextMessage?.text || ""
+        const from = message.key.remoteJid;
+        const msgText = message.message.conversation || message.message.extendedTextMessage?.text || "";
 
         // Comandos empiezan con "/"
         if (msgText.startsWith('/')) {
-            const [cmd, ...args] = msgText.slice(1).split(' ')
-            const respuesta = await ejecutarComando(cmd.toLowerCase(), args, message)
+            const [cmd, ...args] = msgText.slice(1).split(' ');
+            const respuesta = await ejecutarComando(cmd.toLowerCase(), args, message);
             if (respuesta) {
-                await sock.sendMessage(from, { text: respuesta }, { quoted: message })
+                await sock.sendMessage(from, { text: respuesta }, { quoted: message });
             }
         }
     } catch (e) {
-        console.error("Error manejando mensaje:", e)
+        console.error("Error manejando mensaje:", e);
     }
 }
+
+module.exports = { handleMessage };
