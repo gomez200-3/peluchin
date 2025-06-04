@@ -1,4 +1,4 @@
-export function menuPrincipal() {
+function menuPrincipal() {
     return `
 🌟 MENÚ PRINCIPAL 🌟
 
@@ -11,3 +11,5 @@ Próximamente:
 ¡Comenta qué más te gustaría!
 `
 }
+
+module.exports = { menuPrincipal };
