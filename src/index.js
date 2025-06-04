@@ -3,7 +3,7 @@ import { Boom } from '@hapi/boom'
 
 async function startBot() {
     const { state, saveCreds } = await useMultiFileAuthState('auth_info_baileys')
-    const { version, isLatest } = await fetchLatestBaileysVersion()
+    const { version } = await fetchLatestBaileysVersion()
 
     const sock = makeWASocket({
         version,
