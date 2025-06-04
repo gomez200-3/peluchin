@@ -1,3 +1,5 @@
+console.log(require('@whiskeysockets/baileys'));
+process.exit();
 const { makeWASocket, useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion } = require('@whiskeysockets/baileys');
 const { Boom } = require('@hapi/boom');
 const { handleMessage } = require('./bot.js');
