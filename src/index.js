@@ -1,8 +1,38 @@
-console.log(require('@whiskeysockets/baileys'));
-process.exit();
 const { makeWASocket, useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion } = require('@whiskeysockets/baileys');
-const { Boom } = require('@hapi/boom');
 const { handleMessage } = require('./bot.js');
+const qrcode = require('qrcode');
+const fs = require('fs');
+const path = require('path');
+const nodemailer = require('nodemailer');
+require('dotenv').config();
+
+async function enviarQRPorGmail(rutaQR) {
+    // Configura el transporter de nodemailer usando Gmail
+    let transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: process.env.GMAIL_USER,
+            pass: process.env.GMAIL_PASS
+        }
+    });
+
+    let mailOptions = {
+        from: `"Bot WhatsApp" <${process.env.GMAIL_USER}>`,
+        to: process.env.GMAIL_TO,
+        subject: 'QR para iniciar sesión en tu bot de WhatsApp',
+        text: 'Adjunto el QR para iniciar sesión en el bot.',
+        attachments: [
+            {
+                filename: 'qr.png',
+                path: rutaQR
+            }
+        ]
+    };
+
+    // Envía el correo
+    await transporter.sendMail(mailOptions);
+    console.log('QR enviado por Gmail a:', process.env.GMAIL_TO);
+}
 
 async function startBot() {
     const { state, saveCreds } = await useMultiFileAuthState('auth_info_baileys');
@@ -16,10 +46,21 @@ async function startBot() {
 
     sock.ev.on('creds.update', saveCreds);
 
-    sock.ev.on('connection.update', (update) => {
-        const { connection, lastDisconnect } = update;
+    sock.ev.on('connection.update', async (update) => {
+        const { connection, lastDisconnect, qr } = update;
+        if (qr) {
+            // Crea directorio QR si no existe
+            const qrDir = path.join(__dirname, '..', 'qr');
+            if (!fs.existsSync(qrDir)) fs.mkdirSync(qrDir);
+            const qrPath = path.join(qrDir, 'qr.png');
+            await qrcode.toFile(qrPath, qr);
+
+            // Enviar el QR por Gmail
+            await enviarQRPorGmail(qrPath);
+        }
+
         if (connection === 'close') {
-            const shouldReconnect = (lastDisconnect.error)?.output?.statusCode !== DisconnectReason.loggedOut;
+            const shouldReconnect = (lastDisconnect?.error)?.output?.statusCode !== DisconnectReason.loggedOut;
             if (shouldReconnect) {
                 console.log('Reconectando...');
                 startBot();
@@ -33,7 +74,6 @@ async function startBot() {
 
     sock.ev.on('messages.upsert', async ({ messages }) => {
         const msg = messages[0];
-        // Ignora mensajes de estado y de ti mismo
         if (!msg.message || msg.key.fromMe) return;
         await handleMessage(sock, msg);
     });
