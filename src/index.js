@@ -1,4 +1,12 @@
+// Esto carga las variables del .env
+require('dotenv').config();
+
+// Esto importa Baileys
 const { makeWASocket, useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion } = require('@whiskeysockets/baileys');
+
+// Aquí sigue el resto de la lógica de tu bot...
+console.log(process.env.PORT);
+// Ejemplo de uso de una variable del .env
 const { handleMessage } = require('./bot.js');
 const qrcode = require('qrcode');
 const fs = require('fs');
